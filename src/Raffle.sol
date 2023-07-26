@@ -23,6 +23,8 @@
 
 pragma solidity ^0.8.19;
 
+import {VRFCoordinatorV2Interface} from "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+
 /**
  * @title A sample Raffle Contract
  * @author Kelvineth
@@ -32,11 +34,46 @@ pragma solidity ^0.8.19;
 contract Raffle {
     error Raffle__NotEnoughEthSent();
 
-    uint256 private immutable i_entranceFee;
-    address payable[] private s_participants;
+    // State variables
 
-    constructor(uint256 entranceFee_) {
-        i_entranceFee = entranceFee_;
+    uint256 private constant REQUEST_CONFIRMATION = 3;
+    uint256 private constant NUMWORDS = 1;
+
+    uint256 private immutable i_entranceFee;
+    uint256 private immutable i_interval;
+    address private immutable i_vrfCoordinator;
+    bytes32 private immutable i_gasLane;
+    uint64 private immutable i_subscriptionId;
+    uint32 private immutable i_callbackGasLimit;
+
+    // @dev duration of the lottery in seconds
+
+    address payable[] private s_participants;
+    uint256 private s_lastTimeStamp;
+
+    // Events
+
+    event EnteredRaffle(
+        address indexed participant,
+        address vrfCoordinator,
+        bytes32 gasLane
+    );
+
+    constructor(
+        uint256 entranceFee,
+        uint256 interval,
+        address vrfCoordinator,
+        bytes32 gasLane,
+        uint64 subscriptionId,
+        uint32 callbackGasLimit
+    ) {
+        i_entranceFee = entranceFee;
+        i_interval = interval;
+        s_lastTimeStamp = block.timestamp;
+        i_vrfCoordinator = vrfCoordinator;
+        i_gasLane = gasLane;
+        i_subscriptionId = subscriptionId;
+        i_callbackGasLimit = callbackGasLimit;
     }
 
     function enterRaffle() external payable {
@@ -44,9 +81,21 @@ contract Raffle {
             revert Raffle__NotEnoughEthSent();
         }
         s_participants.push(payable(msg.sender));
+        emit EnteredRaffle(msg.sender);
     }
 
-    function pickWinner() public {}
+    function pickWinner() external {
+        if ((block.timestamp - s_lastTimeStamp) < i_interval) {
+            revert();
+        }
+        uint256 requestId = i_vrfCoordinator.requestRandomWords(
+            i_gasLane,
+            i_subscriptionId,
+            REQUEST_CONFIRMATION,
+            i_callbackGasLimit,
+            NUMWORDS
+        );
+    }
 
     // Getters functions
 
