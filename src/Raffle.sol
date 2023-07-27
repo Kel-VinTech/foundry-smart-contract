@@ -36,7 +36,7 @@ contract Raffle {
 
     // State variables
 
-    uint256 private constant REQUEST_CONFIRMATION = 3;
+    uint16 private constant REQUEST_CONFIRMATION = 3;
     uint256 private constant NUMWORDS = 1;
 
     uint256 private immutable i_entranceFee;
