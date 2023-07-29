@@ -53,11 +53,7 @@ contract Raffle {
 
     // Events
 
-    event EnteredRaffle(
-        address indexed participant,
-        address vrfCoordinator,
-        bytes32 gasLane
-    );
+    event EnteredRaffle(address indexed participant);
 
     constructor(
         uint256 entranceFee,
