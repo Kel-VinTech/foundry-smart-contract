@@ -12,4 +12,7 @@ main purpose for using events
 
 //ChainLink VFR
 - ChainLink VFR is a way to connect smart contracts to the outside world
-- 
+
+//Enum
+
+
