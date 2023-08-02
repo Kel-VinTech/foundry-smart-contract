@@ -3,5 +3,8 @@
 pragma solidity ^0.8.19;
 
 import {Script} from "forge-std/Script.sol";
+import {Raffle} from "../src/Raffle.sol";
 
-contract DeployRaffle {}
+contract DeployRaffle {
+    function run() external returns (Raffle) {}
+}
