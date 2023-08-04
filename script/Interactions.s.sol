@@ -31,3 +31,13 @@ contract CreateSubscription is Script {
         return CreateSubscriptionUsingConfig();
     }
 }
+
+contract FundSubcription is Script {
+    uint96 public constant FUND_AMOUNT = 3 ether;
+
+    function fundSubscriptionUsingConfig() public {}
+
+    function run() external {
+        fundSubscriptionUsingConfig();
+    }
+}
